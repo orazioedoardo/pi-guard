@@ -1,0 +1,76 @@
+#!/bin/bash
+
+# Must be root to use this tool
+if [ $EUID -ne 0 ];then
+  	if dpkg-query -s sudo &> /dev/null; then
+        export SUDO="sudo"
+  	else
+    	echo "::: Please install sudo or run this as root."
+    	exit 1
+  fi
+fi
+
+make_conf(){
+    shift
+    $SUDO /opt/pi-guard/makeCONF.sh "$@"
+    exit 1
+}
+
+list_connected(){
+    $SUDO wg show
+    exit 1
+}
+
+list_clients(){
+    $SUDO /opt/pi-guard/listCONF.sh
+    exit 1
+}
+
+show_qrcode(){
+    shift
+    $SUDO /opt/pi-guard/qrcodeCONF.sh "$@"
+    exit 1
+}
+
+remove_client(){
+    shift
+    $SUDO /opt/pi-guard/removeCONF.sh "$@"
+    exit 1
+}
+
+uninstall_server(){
+    $SUDO /opt/pi-guard/uninstall.sh
+    exit 1
+}
+
+show_help(){
+    echo "::: Control all Pi-guard specific functions!"
+    echo ":::"
+    echo "::: Usage: pi-guard <command> [option]"
+    echo ":::"
+    echo "::: Commands:"
+    echo ":::  -a,  add              Create a client conf profile"
+    echo ":::  -c,  clients          List any connected clients to the server"
+    echo ":::  -l,  list             List all clients"
+    echo ":::  -qr, qrcode           Show the qrcode of a client for use with the mobile app"
+    echo ":::  -r,  remove           Remove a client"
+    echo ":::  -h,  help             Show this help dialog"
+    echo ":::  -u,  uninstall        Uninstall Pi-guard from your system!"
+    exit 1
+}
+
+if [ $# = 0 ]; then
+    show_help
+fi
+
+# Handle redirecting to specific functions based on arguments
+case "$1" in
+"-a"  | "add"                ) make_conf "$@";;
+"-c"  | "clients"            ) list_connected;;
+"-l"  | "list"               ) list_clients;;
+"-qr" | "qrcode"             ) show_qrcode "$@";;
+"-r"  | "remove"             ) remove_client "$@";;
+"-h"  | "help"               ) show_help;;
+"-u"  | "uninstall"          ) uninstall_server;;
+*                            ) show_help;;
+esac
