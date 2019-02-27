@@ -73,10 +73,12 @@ for CLIENT_NAME in "${CLIENTS_TO_REMOVE[@]}"; do
         if [[ $REPLY =~ ^[Yy]$ ]]; then
 
             # Grab the least significant octed of the client IP address
-            COUNT=$(grep "Address = " "configs/${CLIENT_NAME}.conf" | cut -d '.' -f 4 | cut -d '/' -f 1)
+            COUNT=$(grep "${CLIENT_NAME}" configs/clients.txt | awk '{print $3}')
+            # And the creation date of the client
+            CREATION_DATE="$(grep "${CLIENT_NAME}" configs/clients.txt | awk '{print $2}')"
 
-            # Remove the octet, so future clients can reuse it
-            sed "/$CLIENT_NAME $(date +%s) $COUNT/d" -i configs/clients.txt
+            # Then remove the client matching the variables above
+            sed "/${CLIENT_NAME} ${CREATION_DATE} ${COUNT}/d" -i configs/clients.txt
             
             # Remove the peer section from the server config
             sed "/# begin ${CLIENT_NAME}/,/# end ${CLIENT_NAME}/d" -i wg0.conf
@@ -92,19 +94,15 @@ for CLIENT_NAME in "${CLIENTS_TO_REMOVE[@]}"; do
             # Find all .conf files in the home folder of the user matching the checksum of the
             # config and delete them. '-maxdepth 3' is used to avoid traversing too many folders.
             find "/home/${INSTALL_USER}" -maxdepth 3 -type f -name '*.conf' -print0 | while IFS= read -r -d '' CONFIG; do
-                if sha256sum -c <<< "$REQUESTED  $CONFIG" &> /dev/null; then
-                    rm "$CONFIG"
+                if sha256sum -c <<< "${REQUESTED}  ${CONFIG}" &> /dev/null; then
+                    rm "${CONFIG}"
                 fi
             done
 
-            CREATION_DATE="$(grep "${CLIENT_NAME}" configs/clients.txt | awk '{print $2}')"
-            sed "/${CLIENT_NAME} ${CREATION_DATE}/d" -i configs/clients.txt
-
             echo "::: Successfully deleted ${CLIENT_NAME}"
-        else
-            exit 1
+
+            ((DELETED_COUNT++))
         fi
-        ((DELETED_COUNT++))
     fi
 
 done
