@@ -90,7 +90,7 @@ PrivateKey = $(cat "keys/${CLIENT_NAME}_priv")
 Address = 10.6.0.${COUNT}/24
 DNS = ${WGDNS1}" > "configs/${CLIENT_NAME}.conf"
 
-if [ "${WGDNS2}" != "Not set" ]; then
+if [ -n "${WGDNS2}" ]; then
     echo ", ${WGDNS2}" >> "configs/${CLIENT_NAME}.conf"
 else
     echo >> "configs/${CLIENT_NAME}.conf"
