@@ -487,7 +487,7 @@ set_client_dns() {
                     fi
 
                     if [ -z "${WGDNS2}" ]; then
-                        WGDNS2="Not set"
+                        WGDNS2=""
                     else
                         if ! valid_ip "${WGDNS2}"; then
                             WGDNS2="Invalid"
