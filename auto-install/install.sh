@@ -740,6 +740,10 @@ install_scripts(){
         $SUDO mkdir "/opt/pi-guard"
     fi
 
+    if [ ! -d "/etc/pi-guard" ]; then
+        $SUDO mkdir "/etc/pi-guard"
+    fi
+
     $SUDO git clone -q "${piguardGitUrl}" /etc/pi-guard/repo > /dev/null
     $SUDO cp /etc/pi-guard/repo/scripts/* /opt/pi-guard
     $SUDO chmod 0755 /opt/pi-guard/{listCONF,makeCONF,qrcodeCONF,removeCONF,uninstall}.sh
@@ -751,9 +755,6 @@ install_scripts(){
 
 final_exports() {
     # Save variables to file for later referencing
-    if [ ! -d "/etc/pi-guard" ]; then
-        $SUDO mkdir "/etc/pi-guard"
-    fi
 
     {
     # These are used when creating a profile
