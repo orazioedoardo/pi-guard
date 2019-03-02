@@ -1,6 +1,6 @@
 # Pi-guard
 
-Modified version of the original [PiVPN](https://github.com/pivpn/pivpn) script that sets up a WireGuard servers and provides management scripts.
+Modified version of the original [PiVPN](https://github.com/pivpn/pivpn) script that sets up a WireGuard server and provides management scripts.
 
 ## Installation
 `curl -L https://raw.githubusercontent.com/orazioedoardo/pi-guard/master/auto-install/install.sh | bash`
