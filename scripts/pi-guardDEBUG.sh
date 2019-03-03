@@ -10,12 +10,13 @@ fi
 
 source "${setupVars}"
 
+EXAMPLE="$(head -1 /etc/wireguard/configs/clients.txt | awk '{print $1}')"
 ERR=0
 
-echo -e "::::\t\t\e[4mPiVPN debug\e[0m\t\t ::::"
+echo -e "::::\t\t\e[4mPi-guard debug\e[0m\t\t ::::"
 printf "=============================================\n"
 echo -e "::::\t    \e[4mInstallation settings\e[0m    \t ::::"
-cat /etc/pivpn/setupVars.conf
+sed "s/$PUBLICDNS/PUBLICDNS/" <  /etc/pi-guard/setupVars.conf
 printf "=============================================\n"
 echo -e "::::  \e[4mServer configuration shown below\e[0m   ::::"
 cd /etc/wireguard/keys
@@ -27,7 +28,6 @@ cat ../wg0.tmp
 rm ../wg0.tmp
 printf "=============================================\n"
 echo -e "::::  \e[4mClient configuration shown below\e[0m   ::::"
-EXAMPLE="$(head -1 /etc/wireguard/configs/clients.txt | awk '{print $1}')"
 cp ../configs/"$EXAMPLE".conf ../configs/"$EXAMPLE".tmp
 for k in *; do
     sed "s#$(cat "$k")#$k#" -i ../configs/"$EXAMPLE".tmp
@@ -52,7 +52,7 @@ else
     fi
 fi
 
-if [ "$(cat /etc/pivpn/NO_UFW)" -eq 1 ]; then
+if [ "$USE_UFW" = "False" ]; then
 
     if iptables -t nat -C POSTROUTING -s 10.6.0.0/24 -o "${piguardInterface}" -j MASQUERADE &> /dev/null; then
         echo ":: [OK] Iptables MASQUERADE rule set"
@@ -153,7 +153,7 @@ else
 fi
 
 if [ "$ERR" -eq 1 ]; then
-    echo -e "[INFO] Run \e[1mpivpn -d\e[0m again to see if we detect issues"
+    echo -e "[INFO] Run \e[1mpi-guard -d\e[0m again to see if we detect issues"
 fi
 printf "=============================================\n"
 echo -e ":::: \e[1mWARNING\e[0m: This script should have automatically masked sensitive       ::::"
