@@ -8,5 +8,4 @@ Modified version of the original [PiVPN](https://github.com/pivpn/pivpn) script 
 ## Caveats
 * Only Raspbian 9 (stretch) is supported.
 * WireGuard module needs to be reinstalled on kernel upgrades.
-* Debug option `pi-guard -d` is not available yet.
 * `pi-guard -c` only runs `wg show`.
