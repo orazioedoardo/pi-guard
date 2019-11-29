@@ -1,6 +1,6 @@
 # Update Oct 14 2019
 
-Developement of WireGuard support continues in the PiVPN repository [here](https://github.com/pivpn/pivpn/tree/test-wireguard). This repository will no longer be updated.
+Developement of WireGuard support continues in the PiVPN repository [here](https://github.com/pivpn/pivpn/tree/test). This repository will no longer be updated.
 
 # Pi-guard
 
